@@ -2,7 +2,7 @@ name: Actualizar Parche Free Fire Automático
 
 on:
   schedule:
-    - cron: '0 3 * * *' # Se ejecuta todos los días
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -14,7 +14,6 @@ jobs:
 
       - name: Obtener Versión de Google Play y Actualizar JSON
         run: |
-          # Extrae la versión visible en la Play Store o genera la etiqueta
           VERSION_TIENDA=$(curl -s "https://play.google.com/store/apps/details?id=com.dts.freefireth&hl=es" | grep -oP '\[\[\["\K[0-9]+\.[0-9]+\.[0-9]+' | head -1 || echo "Oficial")
           FECHA=$(date +'%Y-%m-%d')
           
