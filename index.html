@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiMax Sensi - Generador FF</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #ff4757;
+            --accent-hover: #ff6b81;
+            --text-color: #f8fafc;
+            --subtext: #94a3b8;
+            --success: #2ed573;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-status {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--success);
+            background: rgba(46, 213, 115, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 0 auto 20px auto;
+            display: block;
+            width: fit-content;
+            border: 1px solid rgba(46, 213, 115, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--subtext);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-calc:hover {
+            background: var(--accent-hover);
+        }
+
+        .results-box {
+            margin-top: 25px;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #334155;
+            display: none;
+        }
+
+        .results-box h2 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-val {
+            font-weight: bold;
+            color: #2ed573;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>OptiMax Sensi</h1>
+    <span class="badge-status" id="etiqueta-parche">🟢 Sincronizando Servidor...</span>
+
+    <div class="form-group">
+        <label for="marca-modelo">Modelo de Dispositivo:</label>
+        <input type="text" id="marca-modelo" placeholder="Ej: ZTE Axon, Samsung A54, Xiaomi..." required>
+    </div>
+
+    <div class="form-group">
+        <label for="sensacion-mira">Auto-Calibración de Parche:</label>
+        <select id="sensacion-mira">
+            <option value="1.00">⚖️ Equilibrado (Recomendado)</option>
+            <option value="1.05">🔵 Pesado (Si cuesta subir la mira)</option>
+            <option value="0.95">🔴 Volado (Si la mira se pasa de la cabeza)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="estilo-disparo">Estilo de Arrastre:</label>
+        <select id="estilo-disparo">
+            <option value="normal">Normal (Standard Drag)</option>
+            <option value="rapido">Rápido (Media Distancia / SMG)</option>
+            <option value="escopeta">Escopeta / Un Tiro (One Tap)</option>
+        </select>
+    </div>
+
+    <button class="btn-calc" onclick="generarSensibilidad()">Generar Sensibilidad</button>
+
+    <div class="results-box" id="caja-resultados">
+        <h2>Configuración Generada</h2>
+        <div class="result-item"><span>General:</span><span class="result-val" id="res-general">--</span></div>
+        <div class="result-item"><span>Punto Rojo:</span><span class="result-val" id="res-reddot">--</span></div>
+        <div class="result-item"><span>Mira 2x:</span><span class="result-val" id="res-2x">--</span></div>
+        <div class="result-item"><span>Mira 4x:</span><span class="result-val" id="res-4x">--</span></div>
+        <div class="result-item"><span>Francotirador:</span><span class="result-val" id="res-awm">--</span></div>
+        <div class="result-item"><span>Botón de Disparo:</span><span class="result-val" id="res-boton">--</span></div>
+        <div class="result-item"><span>DPI Sugerido:</span><span class="result-val" id="res-dpi">--</span></div>
+    </div>
+</div>
+
+<script>
+    // Variables globales para sincronización
+    let factorGeneralGlobal = 1.00;
+    let factorRedDotGlobal = 1.00;
+    let factorScopesGlobal = 1.00;
+
+    // Conexión automática con el GitHub optimax-data
+    async function sincronizarConGitHub() {
+        const etiqueta = document.getElementById('etiqueta-parche');
+        try {
+            const urlRaw = 'https://raw.githubusercontent.com/espositahermosa2026-sudo/optimax-data/main/parche_meta.json';
+            const respuesta = await fetch(urlRaw + '?t=' + new Date().getTime()); // Evita guardado en caché
+            
+            if (!respuesta.ok) throw new Error("No se pudo obtener metadatos");
+            
+            const datos = await respuesta.json();
+
+            // Actualizar interfaz con versión remota
+            etiqueta.innerText = "🟢 Sincronizado: " + (datos.version_parche || "Meta Activo");
+            
+            // Cargar factores remotos
+            factorGeneralGlobal = datos.factorGeneral || 1.00;
+            factorRedDotGlobal = datos.factorRedDot || 1.00;
+            factorScopesGlobal = datos.factorScopes || 1.00;
+
+        } catch (error) {
+            console.log("Modo offline o error al conectar con GitHub:", error);
+            etiqueta.innerText = "🟡 Modo Offline (Sincronizado Local)";
+        }
+    }
+
+    // Ejecutar sincronización al abrir la app
+    window.addEventListener('DOMContentLoaded', sincronizarConGitHub);
+
+    // Motor de cálculo de sensibilidad
+    function generarSensibilidad() {
+        const sensacion = parseFloat(document.getElementById('sensacion-mira').value);
+        const estilo = document.getElementById('estilo-disparo').value;
+        
+        let multiplicadorEstilo = 1.0;
+        let botonBase = 48;
+        let dpiBase = 411;
+
+        if (estilo === 'rapido') {
+            multiplicadorEstilo = 1.03;
+            botonBase = 42;
+            dpiBase = 480;
+        } else if (estilo === 'escopeta') {
+            multiplicadorEstilo = 0.97;
+            botonBase = 53;
+            dpiBase = 396;
+        }
+
+        // Aplicar algoritmos combinando servidor + selección de usuario
+        let gen = Math.min(100, Math.round(98 * factorGeneralGlobal * sensacion * multiplicadorEstilo));
+        let red = Math.min(100, Math.round(95 * factorRedDotGlobal * sensacion * multiplicadorEstilo));
+        let m2x = Math.min(100, Math.round(92 * factorScopesGlobal * sensacion));
+        let m4x = Math.min(100, Math.round(88 * factorScopesGlobal * sensacion));
+        let awm = Math.min(100, Math.round(50 * sensacion));
+
+        // Mostrar resultados
+        document.getElementById('res-general').innerText = gen;
+        document.getElementById('res-reddot').innerText = red;
+        document.getElementById('res-2x').innerText = m2x;
+        document.getElementById('res-4x').innerText = m4x;
+        document.getElementById('res-awm').innerText = awm;
+        document.getElementById('res-boton').innerText = botonBase + "%";
+        document.getElementById('res-dpi').innerText = dpiBase;
+
+        document.getElementById('caja-resultados').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
